@@ -160,6 +160,9 @@ Cracking exhibit 1
 
 > pt <- readFile "exhibit-1.pt.txt"
 > ct <- readFile "exhibit-1.ct.txt"
+
+Start cracking from somewhere with a fare amount of repetition
+
 > take 2 $ crack (take 50 $ drop 11998 ct) (drop 11998 pt)
 
 you will get back a single key
@@ -178,6 +181,16 @@ you can now play to the end to find out what the last ?????? in the plain text i
 
 > decode (Chao "AYFZSHINJPTCGBUODEWQVXKRLM" "XQCTVIGYJHNAMBWZEOUFPDSLRK") (drop 11998 ct)
 
-but you cannot as yet rewind to the start because there is a typo in the cipher text.
+you can also rewind the key to the begining (Thanks Moshe Rubin for the typo correction in the ct file)
+
+> rewind (Chao "AYFZSHINJPTCGBUODEWQVXKRLM" "XQCTVIGYJHNAMBWZEOUFPDSLRK") (take 119998 ct)
+
+this gives you the orriginal key used (Chao "AYZNBQDSEFGHLWIKCMOPRTUVJX" "CPEDQRSTIXYLMOZABFVGUHWJKN")
+
+now you can decode the whole message
+
+> decode (Chao "AYZNBQDSEFGHLWIKCMOPRTUVJX" "CPEDQRSTIXYLMOZABFVGUHWJKN") pt
+
+note: you will get an error back on the final newline character.
 
 --}

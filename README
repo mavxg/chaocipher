@@ -1,5 +1,40 @@
+*Cracking exhibit 1*
 
 open ghci
-:l chaocipher.hs
-follow steps at the bottom of the hs file
 
+> :l chaocipher.hs
+
+> pt <- readFile "exhibit-1.pt.txt"
+> ct <- readFile "exhibit-1.ct.txt"
+
+Start cracking from somewhere with a fare amount of repetition
+
+> take 2 $ crack (take 50 $ drop 11998 ct) (drop 11998 pt)
+
+you will get back a single key
+
+> rewind (Chao "I  AE QS  DW PH R GOC NTBL" "QYGWJZSKLHP TVU XANECFOIDM") (take 50 $ drop 11998 ct)
+
+now use the key you get back to propagate forward
+
+> take 2 $ crack' (take 1500 $ drop 11998 ct) (drop 11998 pt) (Chao "A   SHIN PTCGB ODEWQ   RL " "XQCTVIGYJHNAM WZEOUFPDSL K")
+
+the key you get back will have a single space on the left ring put the X in it
+
+> rewind (Chao "EHSGILWRMTCYBXKJQUFPADZNOV" "JSRBYWFXOTDLMGVPUKNQACIZHE") (take 1500 $ drop 11998 ct)
+
+you can now play to the end to find out what the last ?????? in the plain text is
+
+> decode (Chao "AYFZSHINJPTCGBUODEWQVXKRLM" "XQCTVIGYJHNAMBWZEOUFPDSLRK") (drop 11998 ct)
+
+you can also rewind the key to the begining (Thanks Moshe Rubin for the typo correction in the ct file)
+
+> rewind (Chao "AYFZSHINJPTCGBUODEWQVXKRLM" "XQCTVIGYJHNAMBWZEOUFPDSLRK") (take 119998 ct)
+
+this gives you the orriginal key used (Chao "AYZNBQDSEFGHLWIKCMOPRTUVJX" "CPEDQRSTIXYLMOZABFVGUHWJKN")
+
+now you can decode the whole message
+
+> decode (Chao "AYZNBQDSEFGHLWIKCMOPRTUVJX" "CPEDQRSTIXYLMOZABFVGUHWJKN") pt
+
+note: you will get an error back on the final newline character.
