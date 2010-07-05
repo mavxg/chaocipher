@@ -7,7 +7,7 @@ open ghci
 > pt <- readFile "exhibit-1.pt.txt"
 > ct <- readFile "exhibit-1.ct.txt"
 
-Start cracking from somewhere with a fare amount of repetition
+Start cracking from somewhere with a fair amount of repetition
 
 > take 2 $ crack (take 50 $ drop 11998 ct) (drop 11998 pt)
 
