@@ -1,0 +1,5 @@
+
+open ghci
+:l chaocipher.hs
+follow steps at the bottom of the hs file
+
