@@ -38,3 +38,48 @@ now you can decode the whole message
 > decode (Chao "AYZNBQDSEFGHLWIKCMOPRTUVJX" "CPEDQRSTIXYLMOZABFVGUHWJKN") pt
 
 note: you will get an error back on the final newline character.
+
+*Cracking Exhibit 4*
+
+pt <- readFile "exhibit-4.01.last.88.removed.pt.txt"
+ct <- readFile "chaocipher-exhibit-4.ct.txt"
+
+let pt' = [x | x <- pt, x /= '\n']
+
+-- try first to find for a small amount of plain text 
+-- where there are some nice repeated characters (like SSESSTHESITU...)
+-- Because the cipher text is not nicely aligned to the plain text
+-- you will need to try various offsets until you find it line up
+
+let f n = take 2 $ crack (take 55 $ drop (110 + n) ct) (drop 110 pt')
+
+map (\x -> (x,f x)) [0..50] --try all the offsets from 0 to 50 and interupt if you see a solution
+
+--one of these will have a single key and if you are lucky the rest will have no solutions
+
+rewind (*** single key you just found ***) (take 55 $ drop (110 + n) ct)
+
+take 2 $ crack' (take 60 $ drop (110 + n) ct) (drop 110 pt') (*** key you got from rewind ***)
+
+rewind (*** the key just returned ***) (take (155+110+n) ct)
+
+decode (*** the key you found here ***) ct
+
+let (ct2,_) = encode (*** the key you found here ***) $ (take 20 pt2) ++ pt'
+
+-- find the typo in the cipher text
+
+length $ takeWhile (\(a,b) -> a == b) $ zip ct ct2 --will return 1668
+
+take 10 $ drop 1668 ct
+take 10 $ drop 1668 ct2
+
+let ct' = (take 1668 ct) ++ "H" ++ (drop 1669 ct) --fix the typo in the cipher text
+--you can find the correct value easily because you have the known plaintext for this point
+--if you did not then you might have to start guessing where the typo was when your output
+--started to go wild
+
+decode (*** key you found earlier ***) ct'
+
+-- you now have your plain text for exhibit 4
+
